@@ -1,3 +1,8 @@
+# Blockchain Voting System
+
+This is a repository for our group project in the Introduction to Blockchain course at University of Eastern Finland. We will be using the sanattaori/techdot Aadhar voting project as a base for our project. This project provides a starting point for building a blockchain-based voting system, and we will be adding our own modifications and features to it.
+
+--- 
 # Aadhaar Voting
 Aadhaar Based voting system using blockchain technology
 Project implemented as part of Rajasthan Hackathron
