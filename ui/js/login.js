@@ -27,35 +27,36 @@ $(document).ready(function () {
 			$(errormsg).text('Please Enter valid Password');
 
 		} else {
-			$(messagebox).hide()
-			$.ajax({
-				url: "/login",
-				method: "post",
-				dataType: 'json',
-				contentType: 'application/json'	,
-				data: JSON.stringify({
-					"username": $('#username').val(),
-					"password": $('#password').val(),
-				}),
-				success: function (data) {
-					console.log(data.message);
-					$(messagebox).show()
-					$(errormsg).text('Redirecting...')
-					var d = new Date();
-				    d.setTime(d.getTime() + (1*24*60*60*100));
-				    var expires = "expires="+ d.toUTCString();
-				    document.cookie = 'auth' + "=" + data.message + ";" + expires + ";path=/";
-				    window.location = '/app';
-				},
-				statusCode: {
-			        500: function() {
-			        	$(messagebox).show()
-			        	console.log('error');
-			          	$(errormsg).text('Error Invalid Username/Password');
-			        }
-			      }
-				
-			 });//.done(function(msg){
+      $(messagebox).hide()
+      $.ajax({
+          url: "/login",
+          method: "post",
+          dataType: 'json',
+          contentType: 'application/json' ,
+          data: JSON.stringify({
+              "username": $('#username').val(),
+              "password": $('#password').val(),
+          }),
+          success: function (data) {
+              console.log(data.message);
+              $(messagebox).show()
+              $(errormsg).text('Redirecting...')
+              var d = new Date();
+              d.setTime(d.getTime() + (1*24*60*60*100));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = 'auth' + "=" + data.message + ";" + expires + ";path=/";
+              // Redirect the user to the app page directly without OTP
+              window.location = '/app';
+          },
+          statusCode: {
+              500: function() {
+                  $(messagebox).show()
+                  console.log('error');
+                  $(errormsg).text('Error Invalid Username/Password');
+              }
+          }
+          
+       });//.done(function(msg){
 			// 	$(errormsg).text('Redirecting...');
 
 			// }).fail(function(e){

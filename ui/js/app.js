@@ -106,15 +106,20 @@ $(verifyotp).click(function(){
       });
 });
 
-
 $(getotp).click(function(){
-	if ($('#aadhaar_no').val()=="") {
-		$('#errorbox').show()
-		$('#error').text('Please Enter Aadhaar No')
-
+    if ($('#aadhaar_no').val()=="") {
+        $('#errorbox').show()
+        $('#error').text('Please Enter Aadhaar No')
     }
-    else{
-    	onSignInSubmit();
-    	$('#errorbox').hide()
+    else {
+        // Set the 'show' cookie and bypass the OTP process
+        var d = new Date();
+        d.setTime(d.getTime() + (1*24*60*60*1000));      
+        var expires = "expires="+ d.toUTCString();
+        document.cookie = 'show' + "=" + $('#aadhaar_no').val() + ";" + expires + ";path=/";
+        
+        // Redirect to the '/info' page
+        window.location = '/info';
     }
 });
+
