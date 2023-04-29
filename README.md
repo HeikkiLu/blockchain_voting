@@ -9,7 +9,8 @@ This is a repository for our group project in the Introduction to Blockchain cou
 2. Go into the project directory and install dependencies with `npm install`
 3. Install [ganache-cli](https://github.com/trufflesuite/ganache) with `npm install -g ganache-cli`
     - Ganache is a tool for creating a local blockchain for fast development with Ethereum.
-4. Run the project with `node index.js`
+4. Run ´ganache-cli´
+5. Run the project with `node index.js`
 
 ### Default credentials
 | Username | Password |
