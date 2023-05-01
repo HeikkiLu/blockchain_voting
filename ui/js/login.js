@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	var cookie = readCookie('auth');
 	if (cookie != null) {
-		window.location = "/app";
+		window.location = "/info";
 	}
 	//check cookie
 	function readCookie(name) {
@@ -46,7 +46,7 @@ $(document).ready(function () {
               var expires = "expires="+ d.toUTCString();
               document.cookie = 'auth' + "=" + data.message + ";" + expires + ";path=/";
               // Redirect the user to the app page directly without OTP
-              window.location = '/app';
+              window.location = '/info';
           },
           statusCode: {
               500: function() {

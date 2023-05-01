@@ -57,35 +57,11 @@ app.get('/',function(req,res){
 		console.log('ok');
 	}
 });
-
-app.get('/app', function(req, res){
-	var cookie_pass = req.cookies['auth'];
-	var cookie_otp = req.cookies['show'];
-
-	if (passwordHash.verify('password', cookie_pass) && cookie_otp != null) {
-		//res.sendFile(path.join(__dirname, 'ui', 'clist.html'));
-		res.redirect('/info');
-		
-
-	} else if (cookie_otp == null && passwordHash.verify('password', cookie_pass)) {
-		res.sendFile(path.join(__dirname, 'ui', 'app.html'));
-	}
-	else {
-		res.redirect('/');
-	}
-	
-});
-
 // app.post('/getaddress',function(req,res){
 
 // });
 
-app.get('/info', function(req, res){
-	var cookie_pass = req.cookies['auth'];
-	var cookie_otp = req.cookies['show'];
-	if (cookie_pass == null || cookie_pass == '' || cookie_otp == null || cookie_otp == '') {
-		res.redirect('/app');
-	} else {
+app.get('/info', ensureAuthenticated, function(req, res){
 		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 		 code = fs.readFileSync('Voting.sol').toString()
 
@@ -98,11 +74,16 @@ app.get('/info', function(req, res){
 		contractInstance = VotingContract.at(deployedContract.address)
 
 		res.sendFile(path.join(__dirname, 'ui', 'clist.html'));
-	}
-	
 });
 
-
+function ensureAuthenticated(req, res, next) {
+  var cookie_pass = req.cookies['auth'];
+  if (passwordHash.verify('password', cookie_pass)) {
+    return next();
+  } else {
+    res.redirect('/');
+  }
+}
 
 
 var port = 8080;

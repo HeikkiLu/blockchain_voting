@@ -51,7 +51,7 @@ $('.modal').modal();
 		    //logout
 		    document.cookie = "show=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC";
 		    document.cookie = "aadhaar=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC";
-		    window.location = '/app';
+		    window.location = '/';
 
 
 	}
