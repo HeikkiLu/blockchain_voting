@@ -1,0 +1,14 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - '8080:8080'
+    depends_on:
+      - ganache
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    command: ["--host", "0.0.0.0"]
+    ports:
+      - '8545:8545'
+

@@ -13,15 +13,11 @@ RUN npm ci && npm install -g ganache-cli
 # Copy the rest of the application code into the working directory
 COPY . .
 
-# Expose the port the app will run on and the ganache-cli port
-EXPOSE 3000 8545
-
-# Install the "concurrently" package to run multiple processes
-RUN npm install -g concurrently
+# Expose the port the app will run on 
+EXPOSE 3000
 
 # Copy the smart contract
 COPY Voting.sol Voting.sol
 
-# Start the application and ganache-cli concurrently
-CMD ["concurrently", "node index.js", "ganache-cli"]
-
+# Start the application
+CMD ["node", "index.js"]

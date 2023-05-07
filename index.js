@@ -14,8 +14,10 @@ app.use( bodyParser.json() )
 app.use(cookieParser());
 app.use(morgan('combined'));
 
+const cors = require('cors');
 
 
+app.use(cors());
 
 app.use("/", express.static("ui"));
 
@@ -62,7 +64,7 @@ app.get('/',function(req,res){
 // });
 
 app.get('/info', ensureAuthenticated, function(req, res){
-		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+		web3 = new Web3(new Web3.providers.HttpProvider("http://ganache:8545"));
 		 code = fs.readFileSync('Voting.sol').toString()
 
 		 compiledCode = solc.compile(code)
@@ -76,6 +78,10 @@ app.get('/info', ensureAuthenticated, function(req, res){
 		res.sendFile(path.join(__dirname, 'ui', 'clist.html'));
 });
 
+app.get('/web3.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'node_modules', 'web3', 'dist', 'web3.min.js'));
+});
+
 function ensureAuthenticated(req, res, next) {
   var cookie_pass = req.cookies['auth'];
   if (passwordHash.verify('password', cookie_pass)) {
@@ -87,6 +93,6 @@ function ensureAuthenticated(req, res, next) {
 
 
 var port = 8080;
-app.listen(8080, function () {
+app.listen(8080, "0.0.0.0", function () {
   console.log(`app listening on port ${port}!`);
 });
