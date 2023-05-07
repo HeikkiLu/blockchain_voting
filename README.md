@@ -13,16 +13,18 @@ This is a repository for our group project in the Introduction to Blockchain cou
 5. Run `ganache-cli` to create the local blockchain
 6. Run the project with `node index.js`
 
+## With docker
+
+In the project folder:
+1. `docker-compose build`
+2. `docker-compose up`
+
 ### Default credentials
 | Username | Password |
 |----------|----------|
 | admin    | password    |
 
-## With docker
 
-In the project folder:
-1. `docker build -t your-image-name .`
-2. `docker run -p 8080:8080 --name your-container-name your-image-name`
 
 ## License
 
