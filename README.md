@@ -7,16 +7,22 @@ This is a repository for our group project in the Introduction to Blockchain cou
 1. Clone the project
 `git clone https://github.com/HeikkiLu/blockchain_voting.git`
 2. Go into the project directory and install dependencies with `npm install`
-3. Install [ganache-cli](https://github.com/trufflesuite/ganache) with `npm install -g ganache-cli`
+3. Install `npm install ethereumjs-testrpc web3` and `npm install solc`
+4. Install [ganache-cli](https://github.com/trufflesuite/ganache) with `npm install -g ganache-cli`
     - Ganache is a tool for creating a local blockchain for fast development with Ethereum.
-4. Run `ganache-cli` to create the local blockchain
-5. Run the project with `node index.js`
+5. Run `ganache-cli` to create the local blockchain
+6. Run the project with `node index.js`
 
 ### Default credentials
 | Username | Password |
 |----------|----------|
 | admin    | password    |
 
+## With docker
+
+In the project folder:
+1. `docker build -t your-image-name .`
+2. `docker run -p 8080:8080 --name your-container-name your-image-name`
 
 ## License
 
