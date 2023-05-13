@@ -15,7 +15,9 @@ app.use(cookieParser());
 app.use(morgan('combined'));
 
 const cors = require('cors');
+const uuid = require('uuid');
 
+const { getUserUuid, mapUserToUuid, setUserVoted } = require("./db.js");
 
 app.use(cors());
 
@@ -25,21 +27,33 @@ app.use("/", express.static("ui"));
 var username;
 var password;
 
-app.post('/login', function(req, res) {
-    
-	console.log(req.body);
-    username = req.body.username;
-    password = req.body.password;
-    var hashedPassword = passwordHash.generate(password);
-    console.log(hashedPassword);
-    
-    if (username == "admin" && password == "password") {
 
-    	res.status(200).send({ message: hashedPassword});
+app.post('/login', async function(req, res) {
+  console.log(req.body);
+  username = req.body.username;
+  password = req.body.password;
+  var hashedPassword = passwordHash.generate(password);
+  console.log(hashedPassword);
 
+  if (username == "admin" && password == "password") {
+    // Check if the user exists in the database
+    let userUuid = await getUserUuid(username);
+    console.log("User uuid: " + userUuid);
+
+    // If the user doesn't exist, create a new user
+    if (!userUuid) {
+      userUuid = uuid.v4();
+      await mapUserToUuid(userUuid, username);
+      res.status(200).send({ message: hashedPassword, uuid: userUuid });
+    } else if (userUuid && userUuid.voted) {
+      // If the user exists and has already voted, return an error
+      res.status(403).send({ message: 'User has already voted' });
     } else {
-    	res.status(500).send({ message: 'error' });
+      res.status(200).send({ message: hashedPassword, uuid: userUuid });
     }
+  } else {
+    res.status(500).send({ message: 'error' });
+  }
 });
 
 app.post('/auth', function(req, res) {
@@ -81,6 +95,18 @@ app.get('/info', ensureAuthenticated, function(req, res){
 app.get('/web3.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'node_modules', 'web3', 'dist', 'web3.min.js'));
 });
+
+app.post('/vote', async function(req, res) {
+    let username = req.body.username;
+    let user = await getUserUuid(username);
+    if (user && !user.voted) {
+        await setUserVoted(user.uuid);
+        res.status(200).send({ message: 'Vote cast' });
+    } else {
+        res.status(403).send({ message: 'User has already voted' });
+    }
+});
+
 
 function ensureAuthenticated(req, res, next) {
   var cookie_pass = req.cookies['auth'];

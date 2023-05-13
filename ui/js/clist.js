@@ -1,6 +1,3 @@
-
-
-
 $(document).ready(function() {
 $('.modal').modal();
 	// $.ajax({
@@ -30,60 +27,89 @@ $('.modal').modal();
     return null;
 	}
 
-	var aadhaar_list = {
-		"300000000000" : "Akola",
-		"738253790005" : "Bhandara"
-	}
+	const userUuid = readCookie('uuid');
+  const uuidBytes32 = web3.fromAscii(userUuid);
 
-	var aadhaar = readCookie('aadhaar');
+  function disable() {
+    $('#vote1').addClass( "disabled" );
+    $('#vote2').addClass( "disabled" );
+    $('#vote3').addClass( "disabled" );
+    $('#vote4').addClass( "disabled" );
+    
+    //logout
+    document.cookie = "show=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC";
+    document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+    // invalidate the UUID
+    document.cookie = "uuid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-	console.log(aadhaar);
-	var address = aadhaar_list[aadhaar];
-	console.log(address);
-	$('#loc_info').text('Location based on Aadhaar : '+ address)
+    window.location = '/';
+}
 
-	function disable() {
-			$('#vote1').addClass( "disabled" );
-		    $('#vote2').addClass( "disabled" );
-		    $('#vote3').addClass( "disabled" );
-		    $('#vote4').addClass( "disabled" );
-		    
-		    //logout
-		    document.cookie = "show=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC";
-		    document.cookie = "aadhaar=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC";
-		    window.location = '/';
+$('#vote1').click(function(){
+    contractInstance.voteForCandidate('Sanat', uuidBytes32, {from: web3.eth.accounts[0]}, function() {
+        // Notify the server that the user has voted
+        $.post('/vote', { username: "admin" }, function(res) {
+            if (res.message === 'Vote cast') {
+                alert('Vote submitted to Sanat');
+                disable();
+                $('#loc_info').text('Vote submitted successfully to Sanat');
+            } else {
+                alert('Failed to cast vote: ' + res.message);
+            }
+        }).fail(function() {
+            alert('Failed to communicate with server');
+        });
+    });
+})
+$('#vote2').click(function(){
+    contractInstance.voteForCandidate('Aniket', uuidBytes32, {from: web3.eth.accounts[0]}, function() {
+        // Notify the server that the user has voted
+        $.post('/vote', { username: "admin" }, function(res) {
+            if (res.message === 'Vote cast') {
+                alert('Vote submitted to Aniket');
+                disable();
+                $('#loc_info').text('Vote submitted successfully to Aniket');
+            } else {
+                alert('Failed to cast vote: ' + res.message);
+            }
+        }).fail(function() {
+            alert('Failed to communicate with server');
+        });
+    });
+})
 
+$('#vote3').click(function(){
+    contractInstance.voteForCandidate('Mandar', uuidBytes32, {from: web3.eth.accounts[0]}, function() {
+        // Notify the server that the user has voted
+        $.post('/vote', { username: "admin" }, function(res) {
+            if (res.message === 'Vote cast') {
+                alert('Vote submitted to Mandar');
+                disable();
+                $('#loc_info').text('Vote submitted successfully to Mandar');
+            } else {
+                alert('Failed to cast vote: ' + res.message);
+            }
+        }).fail(function() {
+            alert('Failed to communicate with server');
+        });
+    });
+})
 
-	}
-
-	$('#vote1').click(function(){
-		contractInstance.voteForCandidate('Sanat', {from: web3.eth.accounts[0]}, function() {
-		    alert('vote submited to Sanat');
-		    disable();
-		    $('#loc_info').text('Vote submited successfully to Sanat')
-
-		});
-	})
-	$('#vote2').click(function(){
-		contractInstance.voteForCandidate('Aniket', {from: web3.eth.accounts[0]}, function() {
-		    alert('vote submited to Aniket');
-		     disable();
-		     $('#loc_info').text('Vote submited successfully to Aniket')
-		});
-	})
-	$('#vote3').click(function(){
-		contractInstance.voteForCandidate('Mandar', {from: web3.eth.accounts[0]}, function() {
-		    alert('vote submited to Mandar');
-		     disable();
-		      
-		      $('#loc_info').text('Vote submited successfully to Mandar')
-		});
-	})
-	$('#vote4').click(function(){
-		contractInstance.voteForCandidate('Akshay', {from: web3.eth.accounts[0]}, function() {
-		    alert('vote submited to Akshay');
-		     disable();
-		     $('#loc_info').text('Vote submited successfully to Akshay')
-		});
-	})
-});
+$('#vote4').click(function(){
+    contractInstance.voteForCandidate('Akshay', uuidBytes32, {from: web3.eth.accounts[0]}, function() {
+        // Notify the server that the user has voted
+        $.post('/vote', { username: "admin" }, function(res) {
+            if (res.message === 'Vote cast') {
+                alert('Vote submitted to Akshay');
+                disable();
+                $('#loc_info').text('Vote submitted successfully to Akshay');
+            } else {
+                alert('Failed to cast vote: ' + res.message);
+            }
+        }).fail(function() {
+            alert('Failed to communicate with server');
+        });
+    });
+})
+})

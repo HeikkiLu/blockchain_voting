@@ -45,6 +45,7 @@ $(document).ready(function () {
               d.setTime(d.getTime() + (1*24*60*60*100));
               var expires = "expires="+ d.toUTCString();
               document.cookie = 'auth' + "=" + data.message + ";" + expires + ";path=/";
+              document.cookie = 'uuid' + "=" + data.uuid + ";" + expires + ";path=/";
               // Redirect the user to the app page directly without OTP
               window.location = '/info';
           },

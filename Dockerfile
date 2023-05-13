@@ -20,4 +20,4 @@ EXPOSE 3000
 COPY Voting.sol Voting.sol
 
 # Start the application
-CMD ["node", "index.js"]
+CMD node init_db.js && node index.js
