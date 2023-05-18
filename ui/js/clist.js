@@ -53,6 +53,15 @@ $(document).ready(function () {
     window.location = "/";
   }
 
+  // Convert date to "dd.mm.yyyy" format
+  function convertDate(inputFormat) {
+    function pad(s) {
+      return s < 10 ? "0" + s : s;
+    }
+    var d = new Date(inputFormat);
+    return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join(".");
+  }
+
   // Voting time restriction
   var votingStart = new Date("2023-04-02T10:00:00Z");
   var votingEnd = new Date("2023-05-02T20:00:00Z");
@@ -64,7 +73,12 @@ $(document).ready(function () {
     $("#vote2").prop("disabled", true);
     $("#vote3").prop("disabled", true);
     $("#vote4").prop("disabled", true);
-    alert("Voting is only possible during the voting period");
+    alert(
+      "Voting is only allowed during the voting period: " +
+        convertDate(votingStart) +
+        " - " +
+        convertDate(votingEnd)
+    );
   }
 
   $("#vote1").click(function () {
