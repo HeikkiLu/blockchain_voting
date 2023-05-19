@@ -63,9 +63,12 @@ $(document).ready(function () {
   }
 
   // Voting time restriction
-  var votingStart = new Date("2023-04-02T10:00:00Z");
-  var votingEnd = new Date("2023-05-02T20:00:00Z");
+  var votingStart = new Date("2023-04-02T07:00:00Z"); // GMT+0
+  var votingEnd = new Date("2023-05-02T17:00:00Z"); // GMT+0
   var current = new Date();
+
+  var votingStartTime = votingStart.toTimeString().split(" ")[0].slice(0, 5);
+  var votingEndTime = votingEnd.toTimeString().split(" ")[0].slice(0, 5);
   current.toISOString();
 
   if (current < votingStart || current > votingEnd) {
@@ -74,10 +77,16 @@ $(document).ready(function () {
     $("#vote3").prop("disabled", true);
     $("#vote4").prop("disabled", true);
     alert(
-      "Voting is only allowed during the voting period: " +
+      "Voting is only allowed during the voting period:\n" +
         convertDate(votingStart) +
+        " (" +
+        votingStartTime +
+        ")" +
         " - " +
-        convertDate(votingEnd)
+        convertDate(votingEnd) +
+        " (" +
+        votingEndTime +
+        ")"
     );
   }
 
