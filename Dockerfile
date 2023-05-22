@@ -13,9 +13,6 @@ RUN npm install
 # Copy the rest of the application code into the working directory
 COPY . .
 
-# Expose the port the app will run on 
-EXPOSE 3000
-
 # Copy the smart contract
 COPY Voting.sol Voting.sol
 
