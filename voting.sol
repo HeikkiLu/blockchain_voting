@@ -8,7 +8,10 @@ contract Voting {
   */
   
   mapping (bytes32 => uint8) public votesReceived;
-  
+
+  // Track votes per user
+  mapping (bytes32 => bool) public hasVoted;
+
   /* Solidity doesn't let you pass in an array of strings in the constructor (yet).
   We will use an array of bytes32 instead to store the list of candidates
   */
@@ -31,9 +34,12 @@ contract Voting {
 
   // This function increments the vote count for the specified candidate. This
   // is equivalent to casting a vote
-  function voteForCandidate(bytes32 candidate) {
+  function voteForCandidate(bytes32 candidate, bytes32 userUuid) {
     if (validCandidate(candidate) == false) throw;
+    if (hasVoted[userUuid]) throw; // If the user has already voted, revert the transaction
+
     votesReceived[candidate] += 1;
+    hasVoted[userUuid] = true; // Mark the user as having voted
   }
 
   function validCandidate(bytes32 candidate) returns (bool) {
@@ -43,5 +49,10 @@ contract Voting {
       }
     }
     return false;
+  }
+
+    // Check if user has voted
+  function getUserVotingStatus(bytes32 user) public view returns (bool) {
+      return hasVoted[user];
   }
 }
