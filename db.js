@@ -25,19 +25,7 @@ function getUserUuid(username) {
 
 function mapUserToUuid(uuid, username) {
     return new Promise((resolve, reject) => {
-        db.run(`INSERT INTO users(uuid, username, voted) VALUES(?, ?, 0)`, [uuid, username], function(err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
-}
-
-function setUserVoted(uuid) {
-    return new Promise((resolve, reject) => {
-        db.run(`UPDATE users SET voted = 1 WHERE uuid = ?`, [uuid], function(err) {
+        db.run(`INSERT INTO users(uuid, username) VALUES(?, ?)`, [uuid, username], function(err) {
             if (err) {
                 reject(err);
             } else {
@@ -50,6 +38,5 @@ function setUserVoted(uuid) {
 module.exports = {
     getUserUuid,
     mapUserToUuid,
-    setUserVoted
 };
 

@@ -9,7 +9,7 @@ let db = new sqlite3.Database('./voting.db', sqlite3.OPEN_READWRITE | sqlite3.OP
 });
 
 db.serialize(() => {
-    db.run('CREATE TABLE IF NOT EXISTS users(uuid TEXT PRIMARY KEY, username TEXT, voted INTEGER DEFAULT 0)', (err) => {
+    db.run('CREATE TABLE IF NOT EXISTS users(uuid TEXT PRIMARY KEY, username TEXT)', (err) => {
         if (err) {
             console.error(err.message);
         }

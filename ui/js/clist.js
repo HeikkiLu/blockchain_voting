@@ -9,7 +9,7 @@ $('.modal').modal();
 
 
 	web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-	abi = JSON.parse('[{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"totalVotesFor","outputs":[{"name":"","type":"uint8"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"validCandidate","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"votesReceived","outputs":[{"name":"","type":"uint8"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"x","type":"bytes32"}],"name":"bytes32ToString","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"candidateList","outputs":[{"name":"","type":"bytes32"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"voteForCandidate","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"contractOwner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[{"name":"candidateNames","type":"bytes32[]"}],"payable":false,"type":"constructor"}]')
+	abi = JSON.parse('[{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"hasVoted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"totalVotesFor","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"validCandidate","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"votesReceived","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"},{"name":"userUuid","type":"bytes32"}],"name":"voteForCandidate","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"candidateList","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"user","type":"bytes32"}],"name":"getUserVotingStatus","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"candidateNames","type":"bytes32[]"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]')
 	VotingContract = web3.eth.contract(abi);
 	contractInstance = VotingContract.at('0xa7fb89a3fe6927b6d272637b148775f6fee5a8cf');
 	// candidates = {"Rama": "candidate-1", "Nick": "candidate-2", "Jose": "candidate-3"}
@@ -28,7 +28,7 @@ $('.modal').modal();
 	}
 
 	const userUuid = readCookie('uuid');
-  const uuidBytes32 = web3.fromAscii(userUuid);
+  const uuidBytes32 = uuidToBytes32(userUuid);
 
   function disable() {
     $('#vote1').addClass( "disabled" );
@@ -43,7 +43,7 @@ $('.modal').modal();
     // invalidate the UUID
     document.cookie = "uuid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-    window.location = '/';
+    // window.location = '/';
 }
 
 $('#vote1').click(function(){
@@ -62,22 +62,39 @@ $('#vote1').click(function(){
         });
     });
 })
-$('#vote2').click(function(){
-    contractInstance.voteForCandidate('Aniket', uuidBytes32, {from: web3.eth.accounts[0]}, function() {
-        // Notify the server that the user has voted
-        $.post('/vote', { username: "admin" }, function(res) {
-            if (res.message === 'Vote cast') {
-                alert('Vote submitted to Aniket');
-                disable();
-                $('#loc_info').text('Vote submitted successfully to Aniket');
-            } else {
-                alert('Failed to cast vote: ' + res.message);
+$('#vote2').click(function() {
+    console.log("uuidbytes: ", uuidBytes32);
+    console.log("hasVoted: ",contractInstance.hasVoted.call(uuidBytes32));
+    contractInstance.getUserVotingStatus.call(uuidBytes32, function(error, hasVoted) {
+        console.log(hasVoted);
+        if (error) {
+            console.error("An error occurred: " + error);
+            return;
+        }
+
+        if (hasVoted) {
+            disable();
+            alert('You have already voted');
+            return;
+        }
+
+        contractInstance.voteForCandidate('Aniket', uuidBytes32, {from: web3.eth.accounts[0]}, function(error, transactionHash) {
+            if (error) {
+                console.error("An error occurred: " + error);
+                return;
             }
-        }).fail(function() {
-            alert('Failed to communicate with server');
+            
+           web3.eth.getTransactionReceipt(transactionHash, function(error, receipt){
+            if(!error) {
+              console.log(receipt);
+            }
+          });
+            // The vote was successful, we can disable the vote buttons
+            disable();
+            $('#loc_info').text('Vote submitted successfully to Aniket');
         });
     });
-})
+});
 
 $('#vote3').click(function(){
     contractInstance.voteForCandidate('Mandar', uuidBytes32, {from: web3.eth.accounts[0]}, function() {
@@ -113,3 +130,8 @@ $('#vote4').click(function(){
     });
 })
 })
+
+function uuidToBytes32(uuid){
+    return '0x' + uuid.replace(/-/g,'');
+}
+

@@ -5,10 +5,10 @@ FROM node:lts
 WORKDIR /app
 
 # Copy package.json and package-lock.json into the working directory
-COPY package.json package-lock.json ./
+COPY package.json ./
 
-# Install the dependencies and ganache-cli
-RUN npm ci && npm install -g ganache-cli
+# Install the dependencies
+RUN npm install
 
 # Copy the rest of the application code into the working directory
 COPY . .
