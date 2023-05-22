@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
   $('.modal').modal();
 
@@ -12,18 +12,18 @@ $(document).ready(function() {
     $.ajax({
       url: '/getaddress',
       method: 'post',
-      success: function(data) {
+      success: function (data) {
         if (data.contractAddress) {
           contractInstance = VotingContract.at(data.contractAddress);
         } else {
           console.log('Error getting the contract address');
         }
       },
-      error: function(err) {
+      error: function (err) {
         console.log('Error: ', err);
       }
     })
-  ).then(function() {
+  ).then(function () {
     // check cookie
     function readCookie(name) {
       var nameEQ = name + "=";
@@ -55,7 +55,7 @@ $(document).ready(function() {
       // window.location = '/';
     }
 
-    contractInstance.getUserVotingStatus.call(uuidBytes32, function(error, hasVoted) {
+    contractInstance.getUserVotingStatus.call(uuidBytes32, function (error, hasVoted) {
       if (error) {
         console.error("An error occurred: " + error);
         return;
@@ -68,23 +68,28 @@ $(document).ready(function() {
       }
     });
 
-    $('#vote1').click(function() {
-      contractInstance.voteForCandidate(web3.fromAscii('Sanat'), uuidBytes32, { from: web3.eth.accounts[0] }, function(error, transactionHash) {
-        if (error) {
-          console.error("An error occurred: " + error);
-          return;
-        }
-  var votingStartTime = votingStart.toTimeString().split(" ")[0].slice(0, 5);
-  var votingEndTime = votingEnd.toTimeString().split(" ")[0].slice(0, 5);
-  current.toISOString();
+  // Convert date to "dd.mm.yyyy" format
+  function convertDate(inputFormat) {
+    function pad(s) {
+      return s < 10 ? "0" + s : s;
+    }
+    var d = new Date(inputFormat);
+    return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join(".");
+  }
 
-  if (current < votingStart || current > votingEnd) {
-    $("#vote1").prop("disabled", true);
-    $("#vote2").prop("disabled", true);
-    $("#vote3").prop("disabled", true);
-    $("#vote4").prop("disabled", true);
-    alert(
-      "Voting is only allowed during the voting period:\n" +
+    // Voting time restriction
+    var votingStart = new Date("2023-04-02T07:00:00Z"); // GMT+0
+    var votingEnd = new Date("2023-05-02T17:00:00Z"); // GMT+0
+    var current = new Date();
+
+    var votingStartTime = votingStart.toTimeString().split(" ")[0].slice(0, 5);
+    var votingEndTime = votingEnd.toTimeString().split(" ")[0].slice(0, 5);
+    current.toISOString();
+
+    if (current < votingStart || current > votingEnd) {
+      disable();
+      alert(
+        "Voting is only allowed during the voting period:\n" +
         convertDate(votingStart) +
         " (" +
         votingStartTime +
@@ -94,10 +99,18 @@ $(document).ready(function() {
         " (" +
         votingEndTime +
         ")"
-    );
-  }
+      );
+      window.location = '/';
+    }
 
-        web3.eth.getTransactionReceipt(transactionHash, function(error, receipt) {
+    $('#vote1').click(function () {
+      contractInstance.voteForCandidate(web3.fromAscii('Sanat'), uuidBytes32, { from: web3.eth.accounts[0] }, function (error, transactionHash) {
+        if (error) {
+          console.error("An error occurred: " + error);
+          return;
+        }
+
+        web3.eth.getTransactionReceipt(transactionHash, function (error, receipt) {
           if (!error) {
             console.log(receipt);
           }
@@ -108,14 +121,14 @@ $(document).ready(function() {
       });
     });
 
-    $('#vote2').click(function() {
-      contractInstance.voteForCandidate(web3.fromAscii('Aniket'), uuidBytes32, { from: web3.eth.accounts[0] }, function(error, transactionHash) {
+    $('#vote2').click(function () {
+      contractInstance.voteForCandidate(web3.fromAscii('Aniket'), uuidBytes32, { from: web3.eth.accounts[0] }, function (error, transactionHash) {
         if (error) {
           console.error("An error occurred: " + error);
           return;
         }
 
-        web3.eth.getTransactionReceipt(transactionHash, function(error, receipt) {
+        web3.eth.getTransactionReceipt(transactionHash, function (error, receipt) {
           if (!error) {
             console.log(receipt);
           }
@@ -126,14 +139,14 @@ $(document).ready(function() {
       });
     });
 
-    $('#vote3').click(function() {
-      contractInstance.voteForCandidate(web3.fromAscii('Mandar'), uuidBytes32, { from: web3.eth.accounts[0] }, function(error, transactionHash) {
+    $('#vote3').click(function () {
+      contractInstance.voteForCandidate(web3.fromAscii('Mandar'), uuidBytes32, { from: web3.eth.accounts[0] }, function (error, transactionHash) {
         if (error) {
           console.error("An error occurred: " + error);
           return;
         }
 
-        web3.eth.getTransactionReceipt(transactionHash, function(error, receipt) {
+        web3.eth.getTransactionReceipt(transactionHash, function (error, receipt) {
           if (!error) {
             console.log(receipt);
           }
@@ -145,14 +158,14 @@ $(document).ready(function() {
 
     });
 
-    $('#vote4').click(function() {
-      contractInstance.voteForCandidate(web3.fromAscii('Akshay'), uuidBytes32, { from: web3.eth.accounts[0] }, function(error, transactionHash) {
+    $('#vote4').click(function () {
+      contractInstance.voteForCandidate(web3.fromAscii('Akshay'), uuidBytes32, { from: web3.eth.accounts[0] }, function (error, transactionHash) {
         if (error) {
           console.error("An error occurred: " + error);
           return;
         }
 
-        web3.eth.getTransactionReceipt(transactionHash, function(error, receipt) {
+        web3.eth.getTransactionReceipt(transactionHash, function (error, receipt) {
           if (!error) {
             console.log(receipt);
           }
