@@ -6,7 +6,7 @@ This is a repository for our group project in the Introduction to Blockchain cou
 
 - Clone the project
 `git clone https://github.com/HeikkiLu/blockchain_voting.git`
-
+- Rename `voting.sol` to `Voting.sol` 😅
 ### Locally
 1. Go into the project directory and install dependencies with `npm install`
 2. Install `npm install ethereumjs-testrpc web3` and `npm install solc`
