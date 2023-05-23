@@ -1,45 +1,36 @@
 pragma solidity ^0.4.11;
-// We have to specify what version of compiler this code will compile with
 
 contract Voting {
-  /* mapping field below is equivalent to an associative array or hash.
-  The key of the mapping is candidate name stored as type bytes32 and value is
-  an unsigned integer to store the vote count
-  */
-  
-  mapping (bytes32 => uint8) public votesReceived;
 
-  // Track votes per user
+  mapping (bytes32 => uint8) public votesReceived;
   mapping (bytes32 => bool) public hasVoted;
 
-  /* Solidity doesn't let you pass in an array of strings in the constructor (yet).
-  We will use an array of bytes32 instead to store the list of candidates
-  */
-  
   bytes32[] public candidateList;
 
-  /* This is the constructor which will be called once when you
-  deploy the contract to the blockchain. When we deploy the contract,
-  we will pass an array of candidates who will be contesting in the election
-  */
-  function Voting(bytes32[] candidateNames) {
+  // Voting start time
+  uint256 public votingStartTime;
+  // Voting end time
+  uint256 public votingEndTime;
+
+  function Voting(bytes32[] candidateNames, uint256 _votingStartTime, uint256 votingDurationWeeks) public {
     candidateList = candidateNames;
+    votingStartTime = _votingStartTime;
+    votingEndTime = votingStartTime + (votingDurationWeeks * 1 weeks);
   }
 
-  // This function returns the total votes a candidate has received so far
   function totalVotesFor(bytes32 candidate) returns (uint8) {
     if (validCandidate(candidate) == false) throw;
     return votesReceived[candidate];
   }
 
-  // This function increments the vote count for the specified candidate. This
-  // is equivalent to casting a vote
+  // Check if voting period has ended and if user has already voted
   function voteForCandidate(bytes32 candidate, bytes32 userUuid) {
     if (validCandidate(candidate) == false) throw;
-    if (hasVoted[userUuid]) throw; // If the user has already voted, revert the transaction
+    if (hasVoted[userUuid]) throw;
+    if (now < votingStartTime || now > votingEndTime) throw; // If it's not the voting period, revert the transaction
 
     votesReceived[candidate] += 1;
-    hasVoted[userUuid] = true; // Mark the user as having voted
+    hasVoted[userUuid] = true;
   }
 
   function validCandidate(bytes32 candidate) returns (bool) {
@@ -51,8 +42,16 @@ contract Voting {
     return false;
   }
 
-    // Check if user has voted
   function getUserVotingStatus(bytes32 user) public view returns (bool) {
       return hasVoted[user];
   }
+
+  function getVotingEndTime() public view returns (uint256) {
+    return votingEndTime;
+  }
+
+  function getVotingStartTime() public view returns (uint256) {
+    return votingStartTime;
+  }
 }
+

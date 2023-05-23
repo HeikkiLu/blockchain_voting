@@ -52,25 +52,27 @@ async function deployContract() {
   abi = JSON.parse(compiledContract.contracts[':Voting'].interface);
   VotingContract = web3.eth.contract(abi);
 
-
   // Deploying contract
   web3.eth.getAccounts(function(err, accounts) {
-      if(err) {
-          console.log(err);
-      } else {
-          VotingContract.new(['Sanat','Aniket','Mandar','Akshay'], { data: compiledContract.contracts[':Voting'].bytecode, from: accounts[0], gas: 4700000 }, function(err, contract) {
-              if (err) {
-                  console.error(err);
-              } else if (!contract.address) {
-                  console.log("Contract transaction send: TransactionHash: " + contract.transactionHash + " waiting to be mined...");
-              } else {
-                  console.log("Contract mined! Address: " + contract.address);
-                  contractAddress = contract.address;
-              }
-          });
-      }
+    if(err) {
+        console.log(err);
+    } else {
+        const votingDurationWeeks = 1;
+        const votingStartTime = Math.floor(new Date("2023-05-20T07:00:00Z").getTime() / 1000); // Convert to UNIX timestamp
+        VotingContract.new(['Sanat','Aniket','Mandar','Akshay'], votingStartTime, votingDurationWeeks, { data: compiledContract.contracts[':Voting'].bytecode, from: accounts[0], gas: 4700000 }, function(err, contract) {
+            if (err) {
+                console.error(err);
+            } else if (!contract.address) {
+                console.log("Contract transaction send: TransactionHash: " + contract.transactionHash + " waiting to be mined...");
+            } else {
+                console.log("Contract mined! Address: " + contract.address);
+                contractAddress = contract.address;
+            }
+        });
+    }
   });
 }
+
 
 app.post('/login', async function(req, res) {
   username = req.body.username;
