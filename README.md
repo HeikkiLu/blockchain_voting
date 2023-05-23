@@ -14,8 +14,9 @@ This is a repository for our group project in the Introduction to Blockchain cou
     - Ganache is a tool for creating a local blockchain for fast development with Ethereum.
 4. Initialize sqlite database by running `node init_db.js`
 5. Change ganache address in https://github.com/HeikkiLu/blockchain_voting/blob/662a2b01b3314db8fd8b279c1d5821529e1c69b4/index.js#L48 to `http://localhost:8545'`
-6. Run `ganache-cli` to create the local blockchain
-7. Run the project with `node index.js`
+6. Change `hostname` in https://github.com/HeikkiLu/blockchain_voting/blob/c776dd7dff50e51a84d1418827a68ec17fcba788/check_ganache_availibility.js#L6 to `localhost`
+7. Run `ganache-cli` to create the local blockchain
+8. Run the project with `node index.js`
 
 ### With docker
 
